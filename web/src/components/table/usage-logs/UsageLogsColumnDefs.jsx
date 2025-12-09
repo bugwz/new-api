@@ -181,7 +181,7 @@ function renderModelName(record, copyText, t) {
   if (!modelMapped) {
     return renderModelTag(record.model_name, {
       onClick: (event) => {
-        copyText(event, record.model_name).then((r) => {});
+        copyText(event, record.model_name).then((r) => { });
       },
     });
   } else {
@@ -198,7 +198,7 @@ function renderModelName(record, copyText, t) {
                     </Typography.Text>
                     {renderModelTag(record.model_name, {
                       onClick: (event) => {
-                        copyText(event, record.model_name).then((r) => {});
+                        copyText(event, record.model_name).then((r) => { });
                       },
                     })}
                   </div>
@@ -209,7 +209,7 @@ function renderModelName(record, copyText, t) {
                     {renderModelTag(other.upstream_model_name, {
                       onClick: (event) => {
                         copyText(event, other.upstream_model_name).then(
-                          (r) => {},
+                          (r) => { },
                         );
                       },
                     })}
@@ -220,7 +220,7 @@ function renderModelName(record, copyText, t) {
           >
             {renderModelTag(record.model_name, {
               onClick: (event) => {
-                copyText(event, record.model_name).then((r) => {});
+                copyText(event, record.model_name).then((r) => { });
               },
               suffixIcon: (
                 <Route
@@ -490,6 +490,29 @@ export const getLogsColumns = ({
       },
     },
     {
+      key: COLUMN_KEYS.AUDITLOGS,
+      title: t('请求日志'),
+      dataIndex: 'audit_logs',
+      render: (text, record, index) => {
+        if (text != '') {
+          return (
+            <Tag color='green' shape='circle' onClick={(event) => {
+              event.stopPropagation();
+              showUserInfoFunc(record.user_id);
+            }}>
+              {t('查看日志')}
+            </Tag>
+          );
+        } else {
+          return (
+            <Tag color='default' shape='circle'>
+              {t('无日志')}
+            </Tag>
+          );
+        }
+      },
+    },
+    {
       key: COLUMN_KEYS.RETRY,
       title: t('重试'),
       dataIndex: 'retry',
@@ -543,41 +566,41 @@ export const getLogsColumns = ({
         }
         let content = other?.claude
           ? renderModelPriceSimple(
-              other.model_ratio,
-              other.model_price,
-              other.group_ratio,
-              other?.user_group_ratio,
-              other.cache_tokens || 0,
-              other.cache_ratio || 1.0,
-              other.cache_creation_tokens || 0,
-              other.cache_creation_ratio || 1.0,
-              other.cache_creation_tokens_5m || 0,
-              other.cache_creation_ratio_5m || other.cache_creation_ratio || 1.0,
-              other.cache_creation_tokens_1h || 0,
-              other.cache_creation_ratio_1h || other.cache_creation_ratio || 1.0,
-              false,
-              1.0,
-              other?.is_system_prompt_overwritten,
-              'claude',
-            )
+            other.model_ratio,
+            other.model_price,
+            other.group_ratio,
+            other?.user_group_ratio,
+            other.cache_tokens || 0,
+            other.cache_ratio || 1.0,
+            other.cache_creation_tokens || 0,
+            other.cache_creation_ratio || 1.0,
+            other.cache_creation_tokens_5m || 0,
+            other.cache_creation_ratio_5m || other.cache_creation_ratio || 1.0,
+            other.cache_creation_tokens_1h || 0,
+            other.cache_creation_ratio_1h || other.cache_creation_ratio || 1.0,
+            false,
+            1.0,
+            other?.is_system_prompt_overwritten,
+            'claude',
+          )
           : renderModelPriceSimple(
-              other.model_ratio,
-              other.model_price,
-              other.group_ratio,
-              other?.user_group_ratio,
-              other.cache_tokens || 0,
-              other.cache_ratio || 1.0,
-              0,
-              1.0,
-              0,
-              1.0,
-              0,
-              1.0,
-              false,
-              1.0,
-              other?.is_system_prompt_overwritten,
-              'openai',
-            );
+            other.model_ratio,
+            other.model_price,
+            other.group_ratio,
+            other?.user_group_ratio,
+            other.cache_tokens || 0,
+            other.cache_ratio || 1.0,
+            0,
+            1.0,
+            0,
+            1.0,
+            0,
+            1.0,
+            false,
+            1.0,
+            other?.is_system_prompt_overwritten,
+            'openai',
+          );
         return (
           <Typography.Paragraph
             ellipsis={{

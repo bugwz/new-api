@@ -182,7 +182,14 @@ func TextHelper(c *gin.Context, info *relaycommon.RelayInfo) (newAPIError *types
 		service.ResetStatusCode(newApiErr, statusCodeMappingStr)
 		return newApiErr
 	}
-	usage.(*dto.Usage).Audit.Request = requestStr
+	if len(usage.(*dto.Usage).AuditLogs) == 1 {
+		var auditLogs []dto.Message
+		v := dto.GeneralOpenAIRequest{}
+		common.Unmarshal([]byte(requestStr), &v)
+		auditLogs = v.Messages
+		auditLogs = append(auditLogs, usage.(*dto.Usage).AuditLogs[0])
+		usage.(*dto.Usage).AuditLogs = auditLogs
+	}
 
 	if strings.HasPrefix(info.OriginModelName, "gpt-4o-audio") {
 		service.PostAudioConsumeQuota(c, info, usage.(*dto.Usage), "")
@@ -399,10 +406,6 @@ func postConsumeQuota(ctx *gin.Context, relayInfo *relaycommon.RelayInfo, usage 
 		}
 	}
 
-	auditLog := make(map[string]interface{})
-	auditLog["request"] = usage.Audit.Request
-	auditLog["response"] = usage.Audit.Response
-
 	logModel := modelName
 	if strings.HasPrefix(logModel, "gpt-4-gizmo") {
 		logModel = "gpt-4-gizmo-*"
@@ -470,7 +473,7 @@ func postConsumeQuota(ctx *gin.Context, relayInfo *relaycommon.RelayInfo, usage 
 		UseTimeSeconds:   int(useTimeSeconds),
 		IsStream:         relayInfo.IsStream,
 		Group:            relayInfo.UsingGroup,
-		Audit:            auditLog,
+		AuditLogs:        usage.AuditLogs,
 		Other:            other,
 	})
 }
