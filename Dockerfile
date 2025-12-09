@@ -23,7 +23,6 @@ FROM alpine
 RUN apk upgrade --no-cache \
     && apk add --no-cache ca-certificates tzdata \
     && update-ca-certificates
-
 COPY --from=builder2 /build/new-api /
 EXPOSE 3000
 WORKDIR /data
