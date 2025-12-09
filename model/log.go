@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/QuantumNous/new-api/common"
+	"github.com/QuantumNous/new-api/dto"
 	"github.com/QuantumNous/new-api/logger"
 	"github.com/QuantumNous/new-api/types"
 
@@ -36,7 +37,7 @@ type Log struct {
 	TokenId          int    `json:"token_id" gorm:"default:0;index"`
 	Group            string `json:"group" gorm:"index"`
 	Ip               string `json:"ip" gorm:"index;default:''"`
-	Audit            string `json:"audit" gorm:"default:''"`
+	AuditLogs        string `json:"audit_logs" gorm:"default:''"`
 	Other            string `json:"other"`
 }
 
@@ -62,12 +63,6 @@ func formatUserLogs(logs []*Log) {
 		}
 		logs[i].Other = common.MapToJsonStr(otherMap)
 		logs[i].Id = logs[i].Id % 1024
-
-		if logs[i].Audit != "" {
-			var auditMap map[string]interface{}
-			auditMap, _ = common.StrToMap(logs[i].Audit)
-			logs[i].Audit = common.MapToJsonStr(auditMap)
-		}
 	}
 }
 
@@ -157,8 +152,13 @@ type RecordConsumeLogParams struct {
 	UseTimeSeconds   int                    `json:"use_time_seconds"`
 	IsStream         bool                   `json:"is_stream"`
 	Group            string                 `json:"group"`
-	Audit            map[string]interface{} `json:"audit"`
+	AuditLogs        []dto.Message          `json:"audit_logs"`
 	Other            map[string]interface{} `json:"other"`
+}
+
+type RecordConsumeLogAudit struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
 }
 
 func RecordConsumeLog(c *gin.Context, userId int, params RecordConsumeLogParams) {
@@ -167,7 +167,7 @@ func RecordConsumeLog(c *gin.Context, userId int, params RecordConsumeLogParams)
 	}
 	logger.LogInfo(c, fmt.Sprintf("record consume log: userId=%d, params=%s", userId, common.GetJsonString(params)))
 	username := c.GetString("username")
-	auditStr := common.MapToJsonStr(params.Audit)
+	auditStr := common.ArrayToJsonStr(params.AuditLogs)
 	otherStr := common.MapToJsonStr(params.Other)
 	// 判断是否需要记录 IP
 	needRecordIp := false
@@ -198,8 +198,8 @@ func RecordConsumeLog(c *gin.Context, userId int, params RecordConsumeLogParams)
 			}
 			return ""
 		}(),
-		Audit: auditStr,
-		Other: otherStr,
+		AuditLogs: auditStr,
+		Other:     otherStr,
 	}
 	err := LOG_DB.Create(log).Error
 	if err != nil {

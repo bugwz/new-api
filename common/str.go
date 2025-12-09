@@ -35,6 +35,14 @@ func MapToJsonStr(m map[string]interface{}) string {
 	return string(bytes)
 }
 
+func ArrayToJsonStr(a interface{}) string {
+	bytes, err := json.Marshal(a)
+	if err != nil {
+		return ""
+	}
+	return string(bytes)
+}
+
 func StrToMap(str string) (map[string]interface{}, error) {
 	m := make(map[string]interface{})
 	err := Unmarshal([]byte(str), &m)
