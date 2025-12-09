@@ -237,6 +237,9 @@ type Usage struct {
 
 	// OpenRouter Params
 	Cost any `json:"cost,omitempty"`
+
+	// Audit log
+	Audit AuditLog `json:"audit_log,omitempty"`
 }
 
 type OpenAIVideoResponse struct {
@@ -261,6 +264,11 @@ type OutputTokenDetails struct {
 	TextTokens      int `json:"text_tokens"`
 	AudioTokens     int `json:"audio_tokens"`
 	ReasoningTokens int `json:"reasoning_tokens"`
+}
+
+type AuditLog struct {
+	Request  string `json:"request"`
+	Response string `json:"response"`
 }
 
 type OpenAIResponsesResponse struct {

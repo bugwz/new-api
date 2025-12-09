@@ -71,6 +71,8 @@ const EditTokenModal = (props) => {
     unlimited_quota: true,
     model_limits_enabled: false,
     model_limits: [],
+    model_logs_enabled: false,
+    model_logs: [],
     allow_ips: '',
     group: '',
     tokenCount: 1,
@@ -161,6 +163,11 @@ const EditTokenModal = (props) => {
       } else {
         data.model_limits = [];
       }
+      if (data.model_logs !== '') {
+        data.model_logs = data.model_logs.split(',');
+      } else {
+        data.model_logs = [];
+      }
       if (formApiRef.current) {
         formApiRef.current.setValues({ ...getInitValues(), ...data });
       }
@@ -220,6 +227,8 @@ const EditTokenModal = (props) => {
       }
       localInputs.model_limits = localInputs.model_limits.join(',');
       localInputs.model_limits_enabled = localInputs.model_limits.length > 0;
+      localInputs.model_logs = localInputs.model_logs.join(',');
+      localInputs.model_logs_enabled = localInputs.model_logs.length > 0;
       let res = await API.put(`/api/token/`, {
         ...localInputs,
         id: parseInt(props.editingToken.id),
@@ -257,6 +266,8 @@ const EditTokenModal = (props) => {
         }
         localInputs.model_limits = localInputs.model_limits.join(',');
         localInputs.model_limits_enabled = localInputs.model_limits.length > 0;
+        localInputs.model_logs = localInputs.model_logs.join(',');
+        localInputs.model_logs_enabled = localInputs.model_logs.length > 0;
         let res = await API.post(`/api/token/`, localInputs);
         const { success, message } = res.data;
         if (success) {
@@ -551,6 +562,44 @@ const EditTokenModal = (props) => {
                       autosize
                       rows={1}
                       extraText={t('请勿过度信任此功能，IP可能被伪造')}
+                      showClear
+                      style={{ width: '100%' }}
+                    />
+                  </Col>
+                </Row>
+              </Card>
+
+              {/* 访问日志 */}
+              <Card className='!rounded-2xl shadow-sm border-0'>
+                <div className='flex items-center mb-2'>
+                  <Avatar
+                    size='small'
+                    color='purple'
+                    className='mr-2 shadow-md'
+                  >
+                    <IconLink size={16} />
+                  </Avatar>
+                  <div>
+                    <Text className='text-lg font-medium'>{t('访问日志')}</Text>
+                    <div className='text-xs text-gray-600'>
+                      {t('设置令牌的访问日志')}
+                    </div>
+                  </div>
+                </div>
+                <Row gutter={12}>
+                  <Col span={24}>
+                    <Form.Select
+                      field='model_logs'
+                      label={t('启用访问日志的模型列表')}
+                      placeholder={t(
+                        '请选择启用访问日志的模型列表，留空表示不启用访问日志',
+                      )}
+                      multiple
+                      optionList={models}
+                      extraText={t('非必要，不建议启用模型的访问日志')}
+                      filter={selectFilter}
+                      autoClearSearchValue={false}
+                      searchPosition='dropdown'
                       showClear
                       style={{ width: '100%' }}
                     />

@@ -307,6 +307,12 @@ func SetupContextForToken(c *gin.Context, token *model.Token, parts ...string) e
 	} else {
 		c.Set("token_model_limit_enabled", false)
 	}
+	if token.ModelLogsEnabled {
+		c.Set("token_model_logs_enabled", true)
+		c.Set("token_model_logs", token.GetModelLogsMap())
+	} else {
+		c.Set("token_model_logs_enabled", false)
+	}
 	c.Set("token_group", token.Group)
 	if len(parts) > 1 {
 		if model.IsAdmin(token.UserId) {

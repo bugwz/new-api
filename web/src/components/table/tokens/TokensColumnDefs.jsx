@@ -212,6 +212,67 @@ const renderModelLimits = (text, record, t) => {
   }
 };
 
+// Render model logs column
+const renderModelLogs = (text, record, t) => {
+  if (record.model_logs_enabled && text) {
+    const models = text.split(',').filter(Boolean);
+    const categories = getModelCategories(t);
+
+    const vendorAvatars = [];
+    const matchedModels = new Set();
+    Object.entries(categories).forEach(([key, category]) => {
+      if (key === 'all') return;
+      if (!category.icon || !category.filter) return;
+      const vendorModels = models.filter((m) =>
+        category.filter({ model_name: m }),
+      );
+      if (vendorModels.length > 0) {
+        vendorAvatars.push(
+          <Tooltip
+            key={key}
+            content={vendorModels.join(', ')}
+            position='top'
+            showArrow
+          >
+            <Avatar
+              size='extra-extra-small'
+              alt={category.label}
+              color='transparent'
+            >
+              {category.icon}
+            </Avatar>
+          </Tooltip>,
+        );
+        vendorModels.forEach((m) => matchedModels.add(m));
+      }
+    });
+
+    const unmatchedModels = models.filter((m) => !matchedModels.has(m));
+    if (unmatchedModels.length > 0) {
+      vendorAvatars.push(
+        <Tooltip
+          key='unknown'
+          content={unmatchedModels.join(', ')}
+          position='top'
+          showArrow
+        >
+          <Avatar size='extra-extra-small' alt='unknown'>
+            {t('其他')}
+          </Avatar>
+        </Tooltip>,
+      );
+    }
+
+    return <AvatarGroup size='extra-extra-small'>{vendorAvatars}</AvatarGroup>;
+  } else {
+    return (
+      <Tag color='white' shape='circle'>
+        {t('未开启')}
+      </Tag>
+    );
+  }
+};
+
 // Render IP restrictions column
 const renderAllowIps = (text, t) => {
   if (!text || text.trim() === '') {
@@ -467,6 +528,11 @@ export const getTokensColumns = ({
       title: t('可用模型'),
       dataIndex: 'model_limits',
       render: (text, record) => renderModelLimits(text, record, t),
+    },
+    {
+      title: t('可查看日志的模型'),
+      dataIndex: 'model_logs',
+      render: (text, record) => renderModelLogs(text, record, t),
     },
     {
       title: t('IP限制'),

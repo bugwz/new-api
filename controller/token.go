@@ -130,6 +130,8 @@ func GetTokenUsage(c *gin.Context) {
 			"unlimited_quota":      token.UnlimitedQuota,
 			"model_limits":         token.GetModelLimitsMap(),
 			"model_limits_enabled": token.ModelLimitsEnabled,
+			"model_logs":           token.GetModelLogsMap(),
+			"model_logs_enabled":   token.ModelLogsEnabled,
 			"expires_at":           expiredAt,
 		},
 	})
@@ -169,6 +171,8 @@ func AddToken(c *gin.Context) {
 		UnlimitedQuota:     token.UnlimitedQuota,
 		ModelLimitsEnabled: token.ModelLimitsEnabled,
 		ModelLimits:        token.ModelLimits,
+		ModelLogsEnabled:   token.ModelLogsEnabled,
+		ModelLogs:          token.ModelLogs,
 		AllowIps:           token.AllowIps,
 		Group:              token.Group,
 	}
@@ -246,6 +250,8 @@ func UpdateToken(c *gin.Context) {
 		cleanToken.UnlimitedQuota = token.UnlimitedQuota
 		cleanToken.ModelLimitsEnabled = token.ModelLimitsEnabled
 		cleanToken.ModelLimits = token.ModelLimits
+		cleanToken.ModelLogsEnabled = token.ModelLogsEnabled
+		cleanToken.ModelLogs = token.ModelLogs
 		cleanToken.AllowIps = token.AllowIps
 		cleanToken.Group = token.Group
 	}

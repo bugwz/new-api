@@ -24,6 +24,8 @@ type Token struct {
 	UnlimitedQuota     bool           `json:"unlimited_quota"`
 	ModelLimitsEnabled bool           `json:"model_limits_enabled"`
 	ModelLimits        string         `json:"model_limits" gorm:"type:varchar(1024);default:''"`
+	ModelLogsEnabled   bool           `json:"model_logs_enabled"`
+	ModelLogs          string         `json:"model_logs" gorm:"type:varchar(1024);default:''"`
 	AllowIps           *string        `json:"allow_ips" gorm:"default:''"`
 	UsedQuota          int            `json:"used_quota" gorm:"default:0"` // used quota
 	Group              string         `json:"group" gorm:"default:''"`
@@ -185,7 +187,8 @@ func (token *Token) Update() (err error) {
 		}
 	}()
 	err = DB.Model(token).Select("name", "status", "expired_time", "remain_quota", "unlimited_quota",
-		"model_limits_enabled", "model_limits", "allow_ips", "group").Updates(token).Error
+		"model_limits_enabled", "model_limits", "model_logs_enabled", "model_logs", "allow_ips",
+		"group").Updates(token).Error
 	return err
 }
 
@@ -223,11 +226,22 @@ func (token *Token) IsModelLimitsEnabled() bool {
 	return token.ModelLimitsEnabled
 }
 
+func (token *Token) IsModelLogsEnabled() bool {
+	return token.ModelLogsEnabled
+}
+
 func (token *Token) GetModelLimits() []string {
 	if token.ModelLimits == "" {
 		return []string{}
 	}
 	return strings.Split(token.ModelLimits, ",")
+}
+
+func (token *Token) GetModelLogs() []string {
+	if token.ModelLogs == "" {
+		return []string{}
+	}
+	return strings.Split(token.ModelLogs, ",")
 }
 
 func (token *Token) GetModelLimitsMap() map[string]bool {
@@ -239,6 +253,15 @@ func (token *Token) GetModelLimitsMap() map[string]bool {
 	return limitsMap
 }
 
+func (token *Token) GetModelLogsMap() map[string]bool {
+	logs := token.GetModelLogs()
+	logsMap := make(map[string]bool)
+	for _, log := range logs {
+		logsMap[log] = true
+	}
+	return logsMap
+}
+
 func DisableModelLimits(tokenId int) error {
 	token, err := GetTokenById(tokenId)
 	if err != nil {
@@ -246,6 +269,16 @@ func DisableModelLimits(tokenId int) error {
 	}
 	token.ModelLimitsEnabled = false
 	token.ModelLimits = ""
+	return token.Update()
+}
+
+func DisableModelLogs(tokenId int) error {
+	token, err := GetTokenById(tokenId)
+	if err != nil {
+		return err
+	}
+	token.ModelLogsEnabled = false
+	token.ModelLogs = ""
 	return token.Update()
 }
 
