@@ -238,8 +238,8 @@ type Usage struct {
 	// OpenRouter Params
 	Cost any `json:"cost,omitempty"`
 
-	// Audit logs
-	AuditLogs []Message `json:"audit_logs,omitempty"`
+	// Messages
+	Messages []Message `json:"messages,omitempty"`
 }
 
 type OpenAIVideoResponse struct {

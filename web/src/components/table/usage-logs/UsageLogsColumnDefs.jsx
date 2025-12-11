@@ -491,8 +491,8 @@ export const getLogsColumns = ({
     },
     {
       key: COLUMN_KEYS.AUDITLOGS,
-      title: t('请求日志'),
-      dataIndex: 'audit_logs',
+      title: t('消息日志'),
+      dataIndex: 'messages',
       render: (text, record, index) => {
         if (text != '') {
           return (
@@ -500,13 +500,13 @@ export const getLogsColumns = ({
               event.stopPropagation();
               showUserInfoFunc(record.user_id);
             }}>
-              {t('查看日志')}
+              {t('查看消息')}
             </Tag>
           );
         } else {
           return (
             <Tag color='default' shape='circle'>
-              {t('无日志')}
+              {t('无消息')}
             </Tag>
           );
         }

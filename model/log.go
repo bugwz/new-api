@@ -37,7 +37,7 @@ type Log struct {
 	TokenId          int    `json:"token_id" gorm:"default:0;index"`
 	Group            string `json:"group" gorm:"index"`
 	Ip               string `json:"ip" gorm:"index;default:''"`
-	AuditLogs        string `json:"audit_logs" gorm:"default:''"`
+	Messages         string `json:"messages" gorm:"type:longtext"`
 	Other            string `json:"other"`
 }
 
@@ -152,7 +152,7 @@ type RecordConsumeLogParams struct {
 	UseTimeSeconds   int                    `json:"use_time_seconds"`
 	IsStream         bool                   `json:"is_stream"`
 	Group            string                 `json:"group"`
-	AuditLogs        []dto.Message          `json:"audit_logs"`
+	Messages         []dto.Message          `json:"messages"`
 	Other            map[string]interface{} `json:"other"`
 }
 
@@ -167,7 +167,7 @@ func RecordConsumeLog(c *gin.Context, userId int, params RecordConsumeLogParams)
 	}
 	logger.LogInfo(c, fmt.Sprintf("record consume log: userId=%d, params=%s", userId, common.GetJsonString(params)))
 	username := c.GetString("username")
-	auditStr := common.ArrayToJsonStr(params.AuditLogs)
+	messageStr := common.ArrayToJsonStr(params.Messages)
 	otherStr := common.MapToJsonStr(params.Other)
 	// 判断是否需要记录 IP
 	needRecordIp := false
@@ -198,8 +198,8 @@ func RecordConsumeLog(c *gin.Context, userId int, params RecordConsumeLogParams)
 			}
 			return ""
 		}(),
-		AuditLogs: auditStr,
-		Other:     otherStr,
+		Messages: messageStr,
+		Other:    otherStr,
 	}
 	err := LOG_DB.Create(log).Error
 	if err != nil {

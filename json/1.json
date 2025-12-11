@@ -1,0 +1,28 @@
+{
+    "id": "cf44c97a-f518-460e-8a33-d77d5a965316",
+    "object": "chat.completion",
+    "created": 1765293527,
+    "model": "deepseek-chat",
+    "choices": [
+        {
+            "index": 0,
+            "message": {
+                "role": "assistant",
+                "content": "看起来你输入了连续的字母 “ccccc”。  \n\n如果这是一个误输入，或者你想表达其他意思，可以告诉我更多信息，我会尽力帮你解答。  \n\n如果这是某种缩写、代号，或者想测试我的反应，也可以告诉我你的意图哦！ 😊"
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 254,
+        "completion_tokens": 54,
+        "total_tokens": 308,
+        "prompt_tokens_details": {
+            "cached_tokens": 192
+        },
+        "prompt_cache_hit_tokens": 192,
+        "prompt_cache_miss_tokens": 62
+    },
+    "system_fingerprint": "fp_eaab8d114b_prod0820_fp8_kvcache"
+}

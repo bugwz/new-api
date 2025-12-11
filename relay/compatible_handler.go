@@ -182,13 +182,13 @@ func TextHelper(c *gin.Context, info *relaycommon.RelayInfo) (newAPIError *types
 		service.ResetStatusCode(newApiErr, statusCodeMappingStr)
 		return newApiErr
 	}
-	if len(usage.(*dto.Usage).AuditLogs) == 1 {
-		var auditLogs []dto.Message
+	if len(usage.(*dto.Usage).Messages) == 1 {
+		var messages []dto.Message
 		v := dto.GeneralOpenAIRequest{}
 		common.Unmarshal([]byte(requestStr), &v)
-		auditLogs = v.Messages
-		auditLogs = append(auditLogs, usage.(*dto.Usage).AuditLogs[0])
-		usage.(*dto.Usage).AuditLogs = auditLogs
+		messages = v.Messages
+		messages = append(messages, usage.(*dto.Usage).Messages[0])
+		usage.(*dto.Usage).Messages = messages
 	}
 
 	if strings.HasPrefix(info.OriginModelName, "gpt-4o-audio") {
@@ -473,7 +473,7 @@ func postConsumeQuota(ctx *gin.Context, relayInfo *relaycommon.RelayInfo, usage 
 		UseTimeSeconds:   int(useTimeSeconds),
 		IsStream:         relayInfo.IsStream,
 		Group:            relayInfo.UsingGroup,
-		AuditLogs:        usage.AuditLogs,
+		Messages:         usage.Messages,
 		Other:            other,
 	})
 }
