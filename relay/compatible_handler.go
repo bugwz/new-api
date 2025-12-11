@@ -182,7 +182,9 @@ func TextHelper(c *gin.Context, info *relaycommon.RelayInfo) (newAPIError *types
 		service.ResetStatusCode(newApiErr, statusCodeMappingStr)
 		return newApiErr
 	}
-	if len(usage.(*dto.Usage).Messages) == 1 {
+
+	// 设置请求消息内容（非透传模式下）
+	if requestStr != "" && len(usage.(*dto.Usage).Messages) == 1 {
 		var messages []dto.Message
 		v := dto.GeneralOpenAIRequest{}
 		common.Unmarshal([]byte(requestStr), &v)

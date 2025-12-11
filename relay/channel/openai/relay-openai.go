@@ -181,12 +181,14 @@ func OaiStreamHandler(c *gin.Context, info *relaycommon.RelayInfo, resp *http.Re
 	if err := processTokens(info.RelayMode, streamItems, &responseTextBuilder, &toolCount); err != nil {
 		logger.LogError(c, "error processing tokens: "+err.Error())
 	}
-	usage.Messages = append(usage.Messages, dto.Message{Role: "assistant", Content: responseTextBuilder.String()})
 
 	if !containStreamUsage {
 		usage = service.ResponseText2Usage(c, responseTextBuilder.String(), info.UpstreamModelName, info.GetEstimatePromptTokens())
 		usage.CompletionTokens += toolCount * 7
 	}
+
+	// 记录返回消息
+	usage.Messages = append(usage.Messages, dto.Message{Role: "assistant", Content: responseTextBuilder.String()})
 
 	applyUsagePostProcessing(info, usage, nil)
 
@@ -196,7 +198,6 @@ func OaiStreamHandler(c *gin.Context, info *relaycommon.RelayInfo, resp *http.Re
 }
 
 func OpenaiHandler(c *gin.Context, info *relaycommon.RelayInfo, resp *http.Response) (*dto.Usage, *types.NewAPIError) {
-	fmt.Println("OpenaiHandler ---------------------")
 	defer service.CloseResponseBodyGracefully(resp)
 
 	var simpleResponse dto.OpenAITextResponse
@@ -204,7 +205,6 @@ func OpenaiHandler(c *gin.Context, info *relaycommon.RelayInfo, resp *http.Respo
 	if err != nil {
 		return nil, types.NewOpenAIError(err, types.ErrorCodeReadResponseBodyFailed, http.StatusInternalServerError)
 	}
-	fmt.Println("responseBody, ", string(responseBody))
 	if common.DebugEnabled {
 		println("upstream response body:", string(responseBody))
 	}
@@ -233,6 +233,11 @@ func OpenaiHandler(c *gin.Context, info *relaycommon.RelayInfo, resp *http.Respo
 		return nil, types.WithOpenAIError(*oaiError, resp.StatusCode)
 	}
 
+	// 记录返回消息
+	if len(simpleResponse.Choices) == 1 {
+		simpleResponse.Usage.Messages = append(simpleResponse.Usage.Messages, simpleResponse.Choices[0].Message)
+	}
+
 	forceFormat := false
 	if info.ChannelSetting.ForceFormat {
 		forceFormat = true
@@ -257,7 +262,6 @@ func OpenaiHandler(c *gin.Context, info *relaycommon.RelayInfo, resp *http.Respo
 
 	applyUsagePostProcessing(info, &simpleResponse.Usage, responseBody)
 
-	fmt.Println("info.RelayFormat, ", info.RelayFormat)
 	switch info.RelayFormat {
 	case types.RelayFormatOpenAI:
 		if usageModified {
@@ -293,7 +297,6 @@ func OpenaiHandler(c *gin.Context, info *relaycommon.RelayInfo, resp *http.Respo
 		responseBody = geminiRespStr
 	}
 
-	fmt.Println("responseBody, ", string(responseBody))
 	service.IOCopyBytesGracefully(c, resp, responseBody)
 
 	return &simpleResponse.Usage, nil

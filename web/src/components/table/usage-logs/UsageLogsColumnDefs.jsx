@@ -494,7 +494,7 @@ export const getLogsColumns = ({
       title: t('消息日志'),
       dataIndex: 'messages',
       render: (text, record, index) => {
-        if (text != '') {
+        if (text != '' && text != 'null') {
           return (
             <Tag color='green' shape='circle' onClick={(event) => {
               event.stopPropagation();
