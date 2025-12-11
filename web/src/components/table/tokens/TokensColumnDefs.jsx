@@ -530,7 +530,7 @@ export const getTokensColumns = ({
       render: (text, record) => renderModelLimits(text, record, t),
     },
     {
-      title: t('可查看日志的模型'),
+      title: t('记录日志的模型'),
       dataIndex: 'model_logs',
       render: (text, record) => renderModelLogs(text, record, t),
     },

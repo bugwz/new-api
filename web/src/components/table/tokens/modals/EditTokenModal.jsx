@@ -569,7 +569,7 @@ const EditTokenModal = (props) => {
                 </Row>
               </Card>
 
-              {/* 访问日志 */}
+              {/* 请求消息日志 */}
               <Card className='!rounded-2xl shadow-sm border-0'>
                 <div className='flex items-center mb-2'>
                   <Avatar
@@ -580,9 +580,9 @@ const EditTokenModal = (props) => {
                     <IconLink size={16} />
                   </Avatar>
                   <div>
-                    <Text className='text-lg font-medium'>{t('访问日志')}</Text>
+                    <Text className='text-lg font-medium'>{t('请求消息日志')}</Text>
                     <div className='text-xs text-gray-600'>
-                      {t('设置令牌的访问日志')}
+                      {t('记录请求消息日志的模型')}
                     </div>
                   </div>
                 </div>
@@ -590,13 +590,13 @@ const EditTokenModal = (props) => {
                   <Col span={24}>
                     <Form.Select
                       field='model_logs'
-                      label={t('启用访问日志的模型列表')}
+                      label={t('启用请求消息日志的模型列表')}
                       placeholder={t(
-                        '请选择启用访问日志的模型列表，留空表示不启用访问日志',
+                        '请选择启用请求消息日志的模型列表，留空表示任何模型都不记录请求消息日志',
                       )}
                       multiple
                       optionList={models}
-                      extraText={t('非必要，不建议启用模型的访问日志')}
+                      extraText={t('非必要，不建议启用模型的请求消息日志')}
                       filter={selectFilter}
                       autoClearSearchValue={false}
                       searchPosition='dropdown'
