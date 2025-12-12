@@ -112,6 +112,10 @@ export const useLogsData = () => {
   const [showUserInfo, setShowUserInfoModal] = useState(false);
   const [userInfoData, setUserInfoData] = useState(null);
 
+  // Message info modal state
+  const [showMessageInfo, setShowMessageInfoModal] = useState(false);
+  const [messageInfoData, setMessageInfoData] = useState(null);
+
   // Load saved column preferences from localStorage
   useEffect(() => {
     const savedColumns = localStorage.getItem(STORAGE_KEY);
@@ -304,6 +308,38 @@ export const useLogsData = () => {
     }
   };
 
+  // Message modal function
+  const showMessageFunc = (messages) => {
+    try {
+      if (!messages || messages === 'null' || messages.trim() === '') {
+        setMessageInfoData([]);
+        showError(t('无消息内容'));
+      } else {
+        const parsedMessages = JSON.parse(messages);
+        if (!Array.isArray(parsedMessages)) {
+          throw new Error('Messages must be an array');
+        }
+
+        // Validate and transform each message
+        const validMessages = parsedMessages.map(msg => {
+          if (!msg.role || !msg.content) {
+            throw new Error('Invalid message format');
+          }
+          return {
+            ...msg,
+            content: msg.content || '',
+            position: msg.role === 'user' ? 'right' : 'left'
+          };
+        });
+        setMessageInfoData(validMessages);
+      }
+    } catch (e) {
+      setMessageInfoData([]);
+      showError(t('消息解析失败'));
+    }
+    setShowMessageInfoModal(true);
+  };
+
   // Format logs data
   const setLogsFormat = (logs) => {
     let expandDatesLocal = {};
@@ -354,32 +390,32 @@ export const useLogsData = () => {
           key: t('日志详情'),
           value: other?.claude
             ? renderClaudeLogContent(
-                other?.model_ratio,
-                other.completion_ratio,
-                other.model_price,
-                other.group_ratio,
-                other?.user_group_ratio,
-                other.cache_ratio || 1.0,
-                other.cache_creation_ratio || 1.0,
-                other.cache_creation_tokens_5m || 0,
-                other.cache_creation_ratio_5m || other.cache_creation_ratio || 1.0,
-                other.cache_creation_tokens_1h || 0,
-                other.cache_creation_ratio_1h || other.cache_creation_ratio || 1.0,
-              )
+              other?.model_ratio,
+              other.completion_ratio,
+              other.model_price,
+              other.group_ratio,
+              other?.user_group_ratio,
+              other.cache_ratio || 1.0,
+              other.cache_creation_ratio || 1.0,
+              other.cache_creation_tokens_5m || 0,
+              other.cache_creation_ratio_5m || other.cache_creation_ratio || 1.0,
+              other.cache_creation_tokens_1h || 0,
+              other.cache_creation_ratio_1h || other.cache_creation_ratio || 1.0,
+            )
             : renderLogContent(
-                other?.model_ratio,
-                other.completion_ratio,
-                other.model_price,
-                other.group_ratio,
-                other?.user_group_ratio,
-                other.cache_ratio || 1.0,
-                false,
-                1.0,
-                other.web_search || false,
-                other.web_search_call_count || 0,
-                other.file_search || false,
-                other.file_search_call_count || 0,
-              ),
+              other?.model_ratio,
+              other.completion_ratio,
+              other.model_price,
+              other.group_ratio,
+              other?.user_group_ratio,
+              other.cache_ratio || 1.0,
+              false,
+              1.0,
+              other.web_search || false,
+              other.web_search_call_count || 0,
+              other.file_search || false,
+              other.file_search_call_count || 0,
+            ),
         });
         if (logs[i]?.content) {
           expandDataLocal.push({
@@ -490,8 +526,8 @@ export const useLogsData = () => {
           localCountMode = t('上游返回');
         }
         expandDataLocal.push({
-            key: t('计费模式'),
-            value: localCountMode,
+          key: t('计费模式'),
+          value: localCountMode,
         });
       }
       expandDatesLocal[logs[i].key] = expandDataLocal;
@@ -550,7 +586,7 @@ export const useLogsData = () => {
   // Page handlers
   const handlePageChange = (page) => {
     setActivePage(page);
-    loadLogs(page, pageSize).then((r) => {});
+    loadLogs(page, pageSize).then((r) => { });
   };
 
   const handlePageSizeChange = async (size) => {
@@ -645,6 +681,12 @@ export const useLogsData = () => {
     setShowUserInfoModal,
     userInfoData,
     showUserInfoFunc,
+
+    // Message info modal
+    showMessageInfo,
+    setShowMessageInfoModal,
+    messageInfoData,
+    showMessageFunc,
 
     // Functions
     loadLogs,

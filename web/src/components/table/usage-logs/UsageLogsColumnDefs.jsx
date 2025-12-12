@@ -240,6 +240,7 @@ export const getLogsColumns = ({
   COLUMN_KEYS,
   copyText,
   showUserInfoFunc,
+  showMessageFunc,
   isAdminUser,
 }) => {
   return [
@@ -494,15 +495,32 @@ export const getLogsColumns = ({
       title: t('消息日志'),
       dataIndex: 'messages',
       render: (text, record, index) => {
-        if (text != '' && text != 'null') {
-          return (
-            <Tag color='green' shape='circle' onClick={(event) => {
-              event.stopPropagation();
-              showUserInfoFunc(record.user_id);
-            }}>
-              {t('查看消息')}
-            </Tag>
-          );
+        // 检查消息是否有效（非空、非null、非空字符串）
+        const hasValidMessages = text && text !== 'null' && text.trim() !== '';
+        if (hasValidMessages) {
+          try {
+            // 尝试解析消息以验证格式
+            const messages = JSON.parse(text);
+            if (Array.isArray(messages) && messages.length > 0) {
+              return (
+                <Tag
+                  color='green'
+                  shape='circle'
+                  type='light'
+                  style={{ cursor: 'pointer' }}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    console.log('Showing message info for text:', text);
+                    showMessageFunc(text);
+                  }}
+                >
+                  {t('查看消息')}
+                </Tag>
+              );
+            }
+          } catch (e) {
+            console.error('Invalid message format:', e);
+          }
         } else {
           return (
             <Tag color='default' shape='circle'>
