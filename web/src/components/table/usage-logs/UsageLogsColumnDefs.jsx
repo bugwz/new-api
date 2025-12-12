@@ -492,7 +492,7 @@ export const getLogsColumns = ({
     },
     {
       key: COLUMN_KEYS.AUDITLOGS,
-      title: t('消息日志'),
+      title: t('消息记录'),
       dataIndex: 'messages',
       render: (text, record, index) => {
         // 检查消息是否有效（非空、非null、非空字符串）
@@ -513,7 +513,7 @@ export const getLogsColumns = ({
                     showMessageFunc(text);
                   }}
                 >
-                  {t('查看消息')}
+                  {t('查看记录')}
                 </Tag>
               );
             }
@@ -523,7 +523,7 @@ export const getLogsColumns = ({
         } else {
           return (
             <Tag color='default' shape='circle'>
-              {t('无消息')}
+              {t('无记录')}
             </Tag>
           );
         }

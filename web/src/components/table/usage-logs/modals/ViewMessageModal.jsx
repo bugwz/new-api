@@ -59,12 +59,120 @@ const ViewMessageModal = ({
         </div>
       ) : (
         <div style={{ height: '80vh', overflow: 'auto' }}>
+          <style>
+            {`
+              /* 基础样式优化 */
+              .semi-chat-chatBox-content-user {
+                background-color: var(--semi-color-fill-1) !important;
+                color: var(--semi-color-text-1) !important;
+              }
+
+              .semi-chat-chatBox-content-user .semi-typography,
+              .semi-chat-chatBox-content-user .semi-typography code {
+                color: var(--semi-color-text-0) !important;
+              }
+          
+              /* 代码块样式优化 */
+              .semi-chat-chatBox-content pre {
+                margin: 12px 0;
+              }
+
+              /* 标题样式优化 */
+              h1.semi-typography, .semi-typography-h1.semi-typography {
+                font-size: 1.8em;
+                margin: 1.2em 0 0.6em;
+                font-weight: 700;
+                border-bottom: 2px solid var(--semi-color-border);
+                padding-bottom: 0.3em;
+              }
+
+              h2.semi-typography, .semi-typography-h2.semi-typography {
+                font-size: 1.5em;
+                margin: 1em 0 0.5em;
+                font-weight: 600;
+                border-bottom: 1px solid var(--semi-color-border);
+                padding-bottom: 0.2em;
+              }
+
+              h3.semi-typography, .semi-typography-h3.semi-typography {
+                font-size: 1.3em;
+                margin: 0.8em 0 0.4em;
+                font-weight: 600;
+              }
+
+              /* 列表样式优化 */
+              .semi-chat-chatBox-content ul,
+              .semi-chat-chatBox-content ol {
+                margin: 0.8em 0;
+                padding-left: 1.5em;
+              }
+
+              .semi-chat-chatBox-content li {
+                margin: 0.3em 0;
+              }
+
+              /* 引用块样式优化 */
+              .semi-chat-chatBox-content blockquote {
+                margin: 1em 0;
+                padding: 0.5em 1em;
+                border-left: 4px solid var(--semi-color-primary);
+                background-color: var(--semi-color-fill-0);
+                color: var(--semi-color-text-1);
+                font-style: italic;
+              }
+
+              /* 表格样式优化 */
+              .semi-chat-chatBox-content table {
+                width: 100%;
+                margin: 1em 0;
+                border-collapse: collapse;
+                border: 1px solid var(--semi-color-border);
+              }
+
+              .semi-chat-chatBox-content th,
+              .semi-chat-chatBox-content td {
+                padding: 8px 12px;
+                border: 1px solid var(--semi-color-border);
+              }
+
+              .semi-chat-chatBox-content th {
+                background-color: var(--semi-color-fill-1);
+                font-weight: 600;
+              }
+
+              /* 链接样式优化 */
+              .semi-chat-chatBox-content a {
+                color: var(--semi-color-primary);
+                text-decoration: none;
+              }
+
+              .semi-chat-chatBox-content a:hover {
+                text-decoration: underline;
+              }
+
+              /* 段落间距优化 */
+              .semi-chat-chatBox-content p {
+                margin: 0.8em 0;
+                line-height: 1.6;
+              }
+
+              /* 水平线样式优化 */
+              .semi-chat-chatBox-content hr {
+                margin: 1.5em 0;
+                border: none;
+                border-top: 1px solid var(--semi-color-border);
+              }
+            `}
+          </style>
           <Chat
             chats={messageInfoData}
             roleConfig={roleInfo}
-            mode="noBubble"
+            mode="bubble"
             align="leftRight"
             renderInputArea={() => null}
+            chatBoxRenderConfig={{
+              renderChatBoxTitle: () => null
+            }}
             style={{
               height: '100%',
               backgroundColor: 'var(--semi-color-bg-0)'
