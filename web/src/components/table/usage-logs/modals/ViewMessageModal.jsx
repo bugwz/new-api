@@ -42,7 +42,6 @@ const ViewMessageModal = ({
   messageError,
   t,
 }) => {
-  console.log('Rendering ViewMessageModal with messageInfoData:', messageInfoData);
   return (
     <Modal
       title={t('消息详情')}

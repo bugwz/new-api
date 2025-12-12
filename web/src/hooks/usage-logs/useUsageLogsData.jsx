@@ -322,9 +322,6 @@ export const useLogsData = () => {
 
         // Validate and transform each message
         const validMessages = parsedMessages.map(msg => {
-          if (!msg.role || !msg.content) {
-            throw new Error('Invalid message format');
-          }
           return {
             ...msg,
             content: msg.content || '',

@@ -510,7 +510,6 @@ export const getLogsColumns = ({
                   style={{ cursor: 'pointer' }}
                   onClick={(event) => {
                     event.stopPropagation();
-                    console.log('Showing message info for text:', text);
                     showMessageFunc(text);
                   }}
                 >
