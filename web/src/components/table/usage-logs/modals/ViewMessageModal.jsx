@@ -62,7 +62,7 @@ const ViewMessageModal = ({
           <Chat
             chats={messageInfoData}
             roleConfig={roleInfo}
-            mode="bubble"
+            mode="noBubble"
             align="leftRight"
             renderInputArea={() => null}
             style={{
